@@ -7,6 +7,7 @@ import PublicPageLayout from "./components/layouts/PublicPageLayout";
 import AppLayout from "./components/layouts/AppLayout";
 import SignupPage from "./pages/SignUpPage";
 import LoginPage from "./pages/LoginPage";
+import Homepage from "./pages/Homepage";
 
 const darkTheme = createTheme({
   palette: {
@@ -29,7 +30,7 @@ function App() {
                 </ProtectedRoute>
               }
             >
-              <Route path="/" element={<div>Home Page</div>} />
+              <Route path="/" element={<Homepage />} />
             </Route>
             <Route element={<PublicPageLayout />}>
               <Route path="/sign-in" element={<LoginPage />} />

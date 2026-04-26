@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { languages } from "../lib/langsupport";
 import { useState } from "react";
@@ -15,19 +15,60 @@ import {
 } from "@mui/material";
 import SplitButton from "../components/ui/SplitButton";
 import { MuiChipsInput } from "mui-chips-input";
+import { useAddSnippet } from "../actions/snippets/useAddSnippit";
+import { useSnackBarAlert } from "../contexts/snackbar/SnackbarAlertContext";
 
 export default function Homepage() {
+  const { showSnackBar } = useSnackBarAlert();
   const [chips, setChips] = useState<string[]>([]);
-
+  const [title, setTitle] = useState<string>("");
+  const [value, setValue] = useState<string>("console.log('hello world');");
   const [language, setLanguage] =
     useState<keyof typeof languages>("javascript");
+
+  const { saveSnippet, isAdding, errMessage } = useAddSnippet();
+
+  const isValid = value.length > 0 && title.length > 0;
 
   const handleChange = (event: SelectChangeEvent) => {
     setLanguage(event.target.value as keyof typeof languages);
   };
 
+  const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(event.target.value);
+  };
+
   const handleChangeTags = (newChips: string[]) => {
     setChips(newChips);
+  };
+
+  const handleSnippetChange = useCallback((val: string) => {
+    setValue(val);
+  }, []);
+
+  const handleSaveSnippet = () => {
+    saveSnippet(
+      {
+        title,
+        content: value,
+        syntax: language,
+        tags: chips,
+      },
+      {
+        onSuccess: () => {
+          showSnackBar("Snippet saved successfully!", "success");
+          setTitle("");
+          setValue("");
+          setChips([]);
+        },
+        onError: () => {
+          showSnackBar(
+            errMessage || "Failed to save snippet. Please try again.",
+            "error",
+          );
+        },
+      },
+    );
   };
 
   return (
@@ -39,6 +80,8 @@ export default function Homepage() {
         label="Enter code title"
         variant="outlined"
         sx={{ marginBottom: 4 }}
+        value={title}
+        onChange={handleTitleChange}
       />
       <Card variant="outlined" sx={{ width: "100%", p: 2 }}>
         <Stack direction="row" spacing={4} sx={{ mb: 4, alignItems: "center" }}>
@@ -69,11 +112,12 @@ export default function Homepage() {
           />
         </Stack>
         <CodeMirror
-          value="console.log('hello world');"
+          value={value}
           extensions={[languages[language]]}
           theme={"dark"}
           width="100%"
           height="400px"
+          onChange={handleSnippetChange}
         />
       </Card>
       <Stack
@@ -85,8 +129,14 @@ export default function Homepage() {
           width: "100%",
         }}
       >
-        <Button size="medium" variant="outlined">
-          Save snippit
+        <Button
+          onClick={handleSaveSnippet}
+          size="medium"
+          variant="outlined"
+          loading={isAdding}
+          disabled={!isValid}
+        >
+          Save snippet
         </Button>
         <SplitButton />
       </Stack>

@@ -161,7 +161,7 @@ function MainAppBar() {
                   </Typography>
                 </MenuItem>
               ))}
-              <MenuItem onClick={() => logout()}>
+              <MenuItem onClick={() => logout()} disabled={isLoading}>
                 <Typography sx={{ textAlign: "center" }}>
                   {isLoading ? "Logging out..." : "Log out"}
                 </Typography>

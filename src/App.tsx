@@ -8,6 +8,7 @@ import AppLayout from "./components/layouts/AppLayout";
 import SignupPage from "./pages/SignUpPage";
 import LoginPage from "./pages/LoginPage";
 import Homepage from "./pages/Homepage";
+import { SnackbarAlertProvider } from "./contexts/snackbar/SnackbarAlertContext";
 
 const darkTheme = createTheme({
   palette: {
@@ -20,25 +21,27 @@ function App() {
   return (
     <ThemeProvider theme={darkTheme}>
       <QueryClientProvider client={queryClient}>
-        <CssBaseline />
-        <BrowserRouter>
-          <Routes>
-            <Route
-              element={
-                <ProtectedRoute>
-                  <AppLayout />
-                </ProtectedRoute>
-              }
-            >
-              <Route path="/" element={<Homepage />} />
-            </Route>
-            <Route element={<PublicPageLayout />}>
-              <Route path="/sign-in" element={<LoginPage />} />
-              <Route path="/sign-up" element={<SignupPage />} />
-            </Route>
-            <Route path="*" element={<div>404 Page</div>} />
-          </Routes>
-        </BrowserRouter>
+        <SnackbarAlertProvider>
+          <CssBaseline />
+          <BrowserRouter>
+            <Routes>
+              <Route
+                element={
+                  <ProtectedRoute>
+                    <AppLayout />
+                  </ProtectedRoute>
+                }
+              >
+                <Route path="/" element={<Homepage />} />
+              </Route>
+              <Route element={<PublicPageLayout />}>
+                <Route path="/sign-in" element={<LoginPage />} />
+                <Route path="/sign-up" element={<SignupPage />} />
+              </Route>
+              <Route path="*" element={<div>404 Page</div>} />
+            </Routes>
+          </BrowserRouter>
+        </SnackbarAlertProvider>
       </QueryClientProvider>
     </ThemeProvider>
   );

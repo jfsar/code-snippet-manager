@@ -7,11 +7,12 @@ import {
   TextField,
   Stack,
   Link,
+  Snackbar,
 } from "@mui/material";
 
 import { useForm, Controller } from "react-hook-form";
 import { useLogin } from "../actions/auth/useLogin";
-import SnackBarMessageAlert from "../components/alerts/SnackBarMessageAlert";
+import { useSnackBarAlert } from "../contexts/snackbar/SnackbarAlertContext";
 
 type FormValues = {
   email: string;
@@ -19,6 +20,7 @@ type FormValues = {
 };
 
 export default function LoginPage() {
+  const { showSnackBar } = useSnackBarAlert();
   const { login, isLoading, isError, message } = useLogin();
   const {
     control,
@@ -29,12 +31,22 @@ export default function LoginPage() {
   });
 
   const onSubmit = (data: FormValues) => {
-    login({ email: data.email, password: data.password });
+    login(
+      { email: data.email, password: data.password },
+      {
+        onError: (error) => {
+          showSnackBar(
+            error.message || "Failed to login. Please try again.",
+            "error",
+          );
+        },
+      },
+    );
   };
 
   return (
     <Card variant="outlined" sx={{ width: "100%", p: 2 }}>
-      <SnackBarMessageAlert error={isError} message={message} />
+      {/* <SnackBarMessageAlert error={isError} message={message} /> */}
       <form onSubmit={handleSubmit(onSubmit)}>
         <CardContent>
           <Stack spacing={4}>

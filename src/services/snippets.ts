@@ -1,6 +1,7 @@
 import { supabase } from "../lib/supabase";
 
 export type Snippet = {
+  user_id: string;
   title: string;
   content: string;
   syntax: string;
@@ -9,6 +10,7 @@ export type Snippet = {
 };
 
 export async function addSnippet({
+  user_id,
   title,
   content,
   syntax,
@@ -20,6 +22,7 @@ export async function addSnippet({
     content,
     syntax,
     visibility,
+    owner_id: user_id,
   };
 
   if (tags && tags.length > 0) {
@@ -27,6 +30,19 @@ export async function addSnippet({
   }
 
   const { data, error } = await supabase.from("snippets").insert(insertData);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+}
+
+export async function getSnippetsByOwner(owner: string) {
+  const { data, error } = await supabase
+    .from("snippets")
+    .select("*")
+    .eq("owner_id", owner);
 
   if (error) {
     throw new Error(error.message);

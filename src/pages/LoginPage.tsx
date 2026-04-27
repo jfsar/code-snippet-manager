@@ -7,7 +7,6 @@ import {
   TextField,
   Stack,
   Link,
-  Snackbar,
 } from "@mui/material";
 
 import { useForm, Controller } from "react-hook-form";
@@ -21,7 +20,7 @@ type FormValues = {
 
 export default function LoginPage() {
   const { showSnackBar } = useSnackBarAlert();
-  const { login, isLoading, isError, message } = useLogin();
+  const { login, isLoading } = useLogin();
   const {
     control,
     handleSubmit,

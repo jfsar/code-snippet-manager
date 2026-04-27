@@ -13,12 +13,15 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import { useLogout } from "../../actions/auth/useLogout";
+import { useNavigate } from "react-router-dom";
+import { Link } from "@mui/material";
 
 const pages = ["Products", "Pricing", "Blog"];
-const settings = ["Profile", "Account", "Dashboard"];
+const settings = [{ name: "Your Snippets", path: "/snippets" }];
 
 function MainAppBar() {
   const { logout, isLoading } = useLogout();
+  const navigate = useNavigate();
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null,
@@ -42,16 +45,20 @@ function MainAppBar() {
     setAnchorElUser(null);
   };
 
+  const handleNavigate = (path: string) => {
+    setAnchorElNav(null);
+    navigate(path);
+  };
+
   return (
     <AppBar position="static">
       <Container maxWidth={false}>
         <Toolbar disableGutters sx={{ width: "100%" }}>
-          <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
           <Typography
             variant="h6"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            href="#"
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
@@ -61,8 +68,12 @@ function MainAppBar() {
               color: "inherit",
               textDecoration: "none",
             }}
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/");
+            }}
           >
-            LOGO
+            Snippet
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
@@ -104,7 +115,7 @@ function MainAppBar() {
             variant="h5"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            href="/"
             sx={{
               mr: 2,
               display: { xs: "flex", md: "none" },
@@ -116,7 +127,7 @@ function MainAppBar() {
               textDecoration: "none",
             }}
           >
-            LOGO
+            Snippet
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
@@ -155,9 +166,12 @@ function MainAppBar() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                <MenuItem
+                  key={setting.path}
+                  onClick={() => handleNavigate(setting.path)}
+                >
                   <Typography sx={{ textAlign: "center" }}>
-                    {setting}
+                    {setting.name}
                   </Typography>
                 </MenuItem>
               ))}

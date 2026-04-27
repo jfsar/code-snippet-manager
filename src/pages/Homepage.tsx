@@ -17,16 +17,18 @@ import SplitButton from "../components/ui/SplitButton";
 import { MuiChipsInput } from "mui-chips-input";
 import { useAddSnippet } from "../actions/snippets/useAddSnippit";
 import { useSnackBarAlert } from "../contexts/snackbar/SnackbarAlertContext";
+import { useUser } from "../actions/auth/useUser";
 
 export default function Homepage() {
   const { showSnackBar } = useSnackBarAlert();
   const [chips, setChips] = useState<string[]>([]);
   const [title, setTitle] = useState<string>("");
-  const [value, setValue] = useState<string>("console.log('hello world');");
+  const [value, setValue] = useState<string>("");
   const [language, setLanguage] =
     useState<keyof typeof languages>("javascript");
 
-  const { saveSnippet, isAdding, errMessage } = useAddSnippet();
+  const { saveSnippet, isAdding } = useAddSnippet();
+  const { user } = useUser();
 
   const isValid = value.length > 0 && title.length > 0;
 
@@ -49,6 +51,7 @@ export default function Homepage() {
   const handleSaveSnippet = () => {
     saveSnippet(
       {
+        user_id: user?.id as string,
         title,
         content: value,
         syntax: language,
@@ -61,9 +64,9 @@ export default function Homepage() {
           setValue("");
           setChips([]);
         },
-        onError: () => {
+        onError: (error) => {
           showSnackBar(
-            errMessage || "Failed to save snippet. Please try again.",
+            error.message || "Failed to save snippet. Please try again.",
             "error",
           );
         },

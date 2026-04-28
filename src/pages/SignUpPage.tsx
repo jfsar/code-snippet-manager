@@ -6,11 +6,11 @@ import {
   Typography,
   TextField,
   Stack,
-  Link,
 } from "@mui/material";
 
 import { useForm, Controller } from "react-hook-form";
 import { useSignUp } from "../actions/auth/useSignUp";
+import AppLink from "../components/ui/AppLink";
 
 type FormValues = {
   email: string;
@@ -141,9 +141,9 @@ export default function SignupPage() {
           >
             <Typography>
               Already have an account?
-              <Link href="/sign-in" sx={{ ml: 1, textDecoration: "none" }}>
+              <AppLink to="/sign-in" sx={{ ml: 1, textDecoration: "none" }}>
                 Login Here
-              </Link>
+              </AppLink>
             </Typography>
             <Button
               type="submit"

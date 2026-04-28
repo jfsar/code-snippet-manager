@@ -1,23 +1,31 @@
-import React from "react";
 import { useUser } from "../actions/auth/useUser";
 import { useGetSnippetByUser } from "../actions/snippets/useGetSnippetByUser";
 import {
   Box,
   Breadcrumbs,
   Card,
-  Chip,
   Container,
-  Link,
   Stack,
   Typography,
 } from "@mui/material";
 import CodeMirror from "@uiw/react-codemirror";
 import { languages } from "../lib/langsupport";
+import SnippetSkeleton from "../components/skeletons/SnippetSkeleton";
+import AppLink from "../components/ui/AppLink";
 
 export default function SnippetPage() {
   const { user } = useUser();
-  const { snippets } = useGetSnippetByUser(user?.id as string);
-  console.log(snippets);
+  const { snippets, isLoading } = useGetSnippetByUser(user?.id as string);
+
+  if (isLoading) {
+    return (
+      <Box sx={{ width: "100%" }}>
+        {Array.from({ length: 2 }).map((_, index) => (
+          <SnippetSkeleton key={index} />
+        ))}
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -43,59 +51,21 @@ export default function SnippetPage() {
                   <Typography sx={{ color: "text.primary" }}>
                     {user?.user_metadata?.username}
                   </Typography>
-                  <Link underline="hover" color="info" href="/">
+                  <AppLink
+                    underline="hover"
+                    color="info"
+                    to={`/snippets/${snippet.id}`}
+                  >
                     {snippet.id}
-                  </Link>
+                  </AppLink>
                 </Breadcrumbs>
               </div>
             </Stack>
             <Card variant="outlined" sx={{ width: "100%", p: 2, mb: 2 }}>
               <Container
                 maxWidth={false}
-                sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  width: "100%",
-                  p: 0,
-                }}
+                sx={{ width: "100%", paddingBlock: 2 }}
               >
-                <Stack
-                  direction="row"
-                  spacing={2}
-                  sx={{ mb: 2, alignItems: "center" }}
-                >
-                  <Typography color="textSecondary">Syntax:</Typography>
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      backgroundColor: "default.main",
-                      color: "text.primary",
-                      px: 1,
-                      borderRadius: 1,
-                    }}
-                  >
-                    {snippet.syntax}
-                  </Typography>
-                  <Typography color="textSecondary">Tags:</Typography>
-                  {snippet.tags.length > 0 ? (
-                    snippet.tags.map((tag: string) => (
-                      <Chip
-                        key={tag}
-                        label={tag}
-                        size="small"
-                        color="default"
-                      />
-                    ))
-                  ) : (
-                    <Typography variant="body2" color="textSecondary">
-                      No tags
-                    </Typography>
-                  )}
-                </Stack>
-              </Container>
-              <Container maxWidth={false} sx={{ width: "100%" }}>
                 <CodeMirror
                   value={snippet.content}
                   extensions={[

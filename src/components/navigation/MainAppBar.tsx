@@ -14,13 +14,14 @@ import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import { useLogout } from "../../actions/auth/useLogout";
 import { useNavigate } from "react-router-dom";
-import { Link } from "@mui/material";
+import { useUser } from "../../actions/auth/useUser";
 
 const pages = ["Products", "Pricing", "Blog"];
 const settings = [{ name: "Your Snippets", path: "/snippets" }];
 
 function MainAppBar() {
   const { logout, isLoading } = useLogout();
+  const { user } = useUser();
   const navigate = useNavigate();
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
@@ -144,8 +145,8 @@ function MainAppBar() {
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar
-                  alt="John Sarmiento"
-                  src="/static/images/avatar/2.jpg"
+                  alt={user?.user_metadata?.username || "User Avatar"}
+                  src="https://avatars.githubusercontent.com/u/109489086?v=4"
                 />
               </IconButton>
             </Tooltip>

@@ -10,6 +10,7 @@ import LoginPage from "./pages/LoginPage";
 import Homepage from "./pages/Homepage";
 import { SnackbarAlertProvider } from "./contexts/snackbar/SnackbarAlertContext";
 import SnippetPage from "./pages/SnippetPage";
+import SingleSnippetPage from "./pages/SingleSnippetPage";
 
 const darkTheme = createTheme({
   palette: {
@@ -35,6 +36,7 @@ function App() {
               >
                 <Route path="/" element={<Homepage />} />
                 <Route path="/snippets" element={<SnippetPage />} />
+                <Route path="/snippets/:id" element={<SingleSnippetPage />} />
               </Route>
               <Route element={<PublicPageLayout />}>
                 <Route path="/sign-in" element={<LoginPage />} />

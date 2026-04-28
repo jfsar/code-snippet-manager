@@ -50,3 +50,17 @@ export async function getSnippetsByOwner(owner: string) {
 
   return data;
 }
+
+export async function getSnippetById(id: string) {
+  const { data, error } = await supabase
+    .from("snippets")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+}

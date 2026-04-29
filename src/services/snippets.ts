@@ -1,4 +1,5 @@
 import { supabase } from "../lib/supabase";
+import { PER_PAGE } from "../lib/utils";
 
 export type Snippet = {
   user_id: string;
@@ -103,4 +104,30 @@ export async function deleteSnippet(id: string) {
   if (error) {
     throw new Error(error.message);
   }
+}
+
+export async function getPublicSnippets({ page }: { page: number }) {
+  let query = supabase
+    .from("snippets")
+    .select(
+      "id, title, syntax, content, profiles!owner_id(username), created_at",
+      {
+        count: "exact",
+      },
+    )
+    .order("created_at", { ascending: false });
+
+  if (page) {
+    const from = (page - 1) * PER_PAGE;
+    const to = from + PER_PAGE - 1;
+    query = query.range(from, to);
+  }
+
+  const { data, count, error } = await query;
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return { snippets: data, total: count };
 }

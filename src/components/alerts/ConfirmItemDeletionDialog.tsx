@@ -9,7 +9,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { IconButton } from "@mui/material";
 import { useDeleteSnippet } from "../../actions/snippets/useDeleteSnippet";
 import { useNavigate } from "react-router-dom";
-import { QueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function ConfirmItemDeletionDialog({
   id,
@@ -33,7 +33,7 @@ export default function ConfirmItemDeletionDialog({
   const handleDelete = () => {
     deleteSnippet(id, {
       onSuccess() {
-        const queryClient = new QueryClient();
+        const queryClient = useQueryClient();
         queryClient.invalidateQueries({ queryKey: ["snippets", owner] });
         navigate("/snippets");
       },

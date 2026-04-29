@@ -1,9 +1,9 @@
-import { QueryClient, useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { registerAccount } from "../../services/auth";
 import { useNavigate } from "react-router-dom";
 
 export function useSignUp() {
-  const queryClient = new QueryClient();
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { mutate: signup, isPending } = useMutation({
     mutationFn: registerAccount,

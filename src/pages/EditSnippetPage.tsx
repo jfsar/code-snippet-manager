@@ -22,7 +22,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useGetSnippetById } from "../actions/snippets/useGetSnippetById";
 import SnippetSkeleton from "../components/skeletons/SnippetSkeleton";
 import { useUpdateSnippet } from "../actions/snippets/useUpdateSnippet";
-import { QueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function EditSnippetPage() {
   const params = useParams();
@@ -71,7 +71,7 @@ export default function EditSnippetPage() {
       },
       {
         onSuccess: () => {
-          const queryClient = new QueryClient();
+          const queryClient = useQueryClient();
           setTitle("");
           setValue("");
           setChips([]);

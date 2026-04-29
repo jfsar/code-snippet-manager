@@ -39,7 +39,6 @@ function App() {
               >
                 <Route path="/" element={<Homepage />} />
                 <Route path="/snippets" element={<SnippetPage />} />
-                <Route path="/snippets/:id" element={<SingleSnippetPage />} />
                 <Route
                   path="/snippets/:id/edit"
                   element={<EditSnippetPage />}
@@ -51,6 +50,7 @@ function App() {
               </Route>
               <Route element={<AppLayout />}>
                 <Route path="/discover" element={<DiscoverPage />} />
+                <Route path="/snippets/:id" element={<SingleSnippetPage />} />
               </Route>
               <Route path="*" element={<div>404 Page</div>} />
             </Routes>

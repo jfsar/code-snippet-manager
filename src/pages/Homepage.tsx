@@ -17,7 +17,7 @@ import { MuiChipsInput } from "mui-chips-input";
 import { useAddSnippet } from "../actions/snippets/useAddSnippit";
 import { useSnackBarAlert } from "../contexts/snackbar/SnackbarAlertContext";
 import { useUser } from "../actions/auth/useUser";
-import { QueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function Homepage() {
   const { showSnackBar } = useSnackBarAlert();
@@ -59,7 +59,7 @@ export default function Homepage() {
       },
       {
         onSuccess: () => {
-          const queryClient = new QueryClient();
+          const queryClient = useQueryClient();
           queryClient.invalidateQueries({ queryKey: ["snippets", user?.id] });
           showSnackBar("Snippet saved successfully!", "success");
           setTitle("");

@@ -1,13 +1,7 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
-import { useSnackBarAlert } from "../../contexts/snackbar/SnackbarAlertContext";
+import { useMutation } from "@tanstack/react-query";
 import { updateSnippet } from "../../services/snippets";
 
 export function useUpdateSnippet() {
-  const queryClient = useQueryClient();
-  const navigate = useNavigate();
-  const { showSnackBar } = useSnackBarAlert();
-
   const {
     mutate: updateSnippetMutation,
     isPending,

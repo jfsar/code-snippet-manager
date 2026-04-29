@@ -8,7 +8,6 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import LibraryAddCheckIcon from "@mui/icons-material/LibraryAddCheck";
@@ -18,6 +17,7 @@ import SnippetSkeleton from "../components/skeletons/SnippetSkeleton";
 import { useNavigate, useParams } from "react-router-dom";
 import { useGetSnippetById } from "../actions/snippets/useGetSnippetById";
 import { useState } from "react";
+import ConfirmItemDeletionDialog from "../components/alerts/ConfirmItemDeletionDialog";
 
 export default function SingleSnippetPage() {
   const { user } = useUser();
@@ -117,9 +117,10 @@ export default function SingleSnippetPage() {
                     >
                       <ModeEditIcon fontSize="inherit" />
                     </IconButton>
-                    <IconButton aria-label="delete" color="error" size="small">
-                      <DeleteIcon fontSize="inherit" />
-                    </IconButton>
+                    <ConfirmItemDeletionDialog
+                      id={snippet.id}
+                      owner={snippet.owner_id}
+                    />
                   </>
                 )}
                 <IconButton

@@ -96,3 +96,11 @@ export async function updateSnippet(
 
   return id;
 }
+
+export async function deleteSnippet(id: string) {
+  const { error } = await supabase.from("snippets").delete().eq("id", id);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}

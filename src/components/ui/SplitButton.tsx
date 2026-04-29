@@ -9,16 +9,22 @@ import Popper from "@mui/material/Popper";
 import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
 
+type SplitButtonProps = {
+  onClick: () => void;
+  isLoading: boolean;
+  disabled?: boolean;
+};
+
 const options = ["Create a public snippit"];
 
-export default function SplitButton() {
+export default function SplitButton({
+  onClick,
+  isLoading,
+  disabled = false,
+}: SplitButtonProps) {
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef<HTMLDivElement>(null);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
-
-  const handleClick = () => {
-    console.info(`You clicked ${options[selectedIndex]}`);
-  };
 
   const handleMenuItemClick = (
     event: React.MouseEvent<HTMLLIElement, MouseEvent>,
@@ -50,7 +56,9 @@ export default function SplitButton() {
         ref={anchorRef}
         aria-label="Button group with a nested menu"
       >
-        <Button onClick={handleClick}>{options[selectedIndex]}</Button>
+        <Button loading={isLoading} disabled={disabled} onClick={onClick}>
+          {options[selectedIndex]}
+        </Button>
         <Button
           size="small"
           aria-controls={open ? "split-button-menu" : undefined}

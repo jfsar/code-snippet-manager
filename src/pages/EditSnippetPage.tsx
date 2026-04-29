@@ -4,33 +4,44 @@ import { languages } from "../lib/langsupport";
 import { useState } from "react";
 import Card from "@mui/material/Card";
 import {
+  Box,
+  Button,
   FormControl,
   InputLabel,
   MenuItem,
   Select,
   Stack,
   TextField,
+  Typography,
   type SelectChangeEvent,
 } from "@mui/material";
-import SplitButton from "../components/ui/SplitButton";
 import { MuiChipsInput } from "mui-chips-input";
-import { useAddSnippet } from "../actions/snippets/useAddSnippit";
 import { useSnackBarAlert } from "../contexts/snackbar/SnackbarAlertContext";
 import { useUser } from "../actions/auth/useUser";
+import { useNavigate, useParams } from "react-router-dom";
+import { useGetSnippetById } from "../actions/snippets/useGetSnippetById";
+import SnippetSkeleton from "../components/skeletons/SnippetSkeleton";
+import { useUpdateSnippet } from "../actions/snippets/useUpdateSnippet";
 import { QueryClient } from "@tanstack/react-query";
 
-export default function Homepage() {
+export default function EditSnippetPage() {
+  const params = useParams();
+  const navigate = useNavigate();
+  const { snippet, isLoading } = useGetSnippetById(params?.id as string);
   const { showSnackBar } = useSnackBarAlert();
-  const [chips, setChips] = useState<string[]>([]);
-  const [title, setTitle] = useState<string>("");
-  const [value, setValue] = useState<string>("");
-  const [language, setLanguage] =
-    useState<keyof typeof languages>("javascript");
+  const [chips, setChips] = useState<string[]>(
+    (snippet?.tags as string[]) || [],
+  );
+  const [title, setTitle] = useState<string>(snippet?.title || "");
+  const [value, setValue] = useState<string>(snippet?.content || "");
+  const [language, setLanguage] = useState<keyof typeof languages>(
+    (snippet?.syntax as keyof typeof languages) || "javascript",
+  );
 
-  const { saveSnippet, isAdding } = useAddSnippet();
+  const { updateSnippetMutation: updateSnippit, isPending } =
+    useUpdateSnippet();
+
   const { user } = useUser();
-
-  const isValid = value.length > 0 && title.length > 0;
 
   const handleChange = (event: SelectChangeEvent) => {
     setLanguage(event.target.value as keyof typeof languages);
@@ -48,10 +59,11 @@ export default function Homepage() {
     setValue(val);
   }, []);
 
-  const handleSaveSnippet = () => {
-    saveSnippet(
+  const handleUpdateSnippet = () => {
+    updateSnippit(
       {
-        user_id: user?.id as string,
+        id: params?.id as string,
+        // user_id: user?.id as string,
         title,
         content: value,
         syntax: language,
@@ -60,21 +72,47 @@ export default function Homepage() {
       {
         onSuccess: () => {
           const queryClient = new QueryClient();
-          queryClient.invalidateQueries({ queryKey: ["snippets", user?.id] });
-          showSnackBar("Snippet saved successfully!", "success");
           setTitle("");
           setValue("");
           setChips([]);
+          queryClient.invalidateQueries({ queryKey: ["snippets", user?.id] });
+          queryClient.invalidateQueries({ queryKey: ["snippet", params?.id] });
+          navigate(`/snippets/${params?.id}`);
+          showSnackBar("Snippet updated successfully!", "success");
         },
         onError: (error) => {
           showSnackBar(
-            error.message || "Failed to save snippet. Please try again.",
+            error.message || "Failed to update snippet. Please try again.",
             "error",
           );
         },
       },
     );
   };
+
+  if (isLoading) {
+    return (
+      <Box sx={{ width: "100%" }}>
+        <SnippetSkeleton height="60vh" />
+      </Box>
+    );
+  }
+
+  if (!snippet) {
+    return (
+      <Box
+        sx={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "60vh",
+        }}
+      >
+        <Typography variant="h6">Snippet not found</Typography>
+      </Box>
+    );
+  }
 
   return (
     <React.Fragment>
@@ -134,11 +172,22 @@ export default function Homepage() {
           width: "100%",
         }}
       >
-        <SplitButton
-          onClick={handleSaveSnippet}
-          isLoading={isAdding}
-          disabled={!isValid}
-        />
+        <Button
+          onClick={() => navigate(-1)}
+          variant="outlined"
+          size="small"
+          sx={{ mr: 2 }}
+        >
+          Cancel
+        </Button>
+        <Button
+          variant="contained"
+          size="small"
+          onClick={handleUpdateSnippet}
+          loading={isPending}
+        >
+          Save Changes
+        </Button>
       </Stack>
     </React.Fragment>
   );

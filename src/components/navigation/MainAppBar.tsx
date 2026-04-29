@@ -15,13 +15,14 @@ import AdbIcon from "@mui/icons-material/Adb";
 import { useLogout } from "../../actions/auth/useLogout";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../actions/auth/useUser";
+import AppLink from "../ui/AppLink";
 
-const pages = ["Products", "Pricing", "Blog"];
+const pages = [{ name: "All Snippets", path: "/discover" }];
 const settings = [{ name: "Your Snippets", path: "/snippets" }];
 
 function MainAppBar() {
   const { logout, isLoading } = useLogout();
-  const { user } = useUser();
+  const { user, isAuthenticated } = useUser();
   const navigate = useNavigate();
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
@@ -38,7 +39,8 @@ function MainAppBar() {
     setAnchorElUser(event.currentTarget);
   };
 
-  const handleCloseNavMenu = () => {
+  const handleCloseNavMenu = (path: string) => {
+    navigate(path);
     setAnchorElNav(null);
   };
 
@@ -47,19 +49,18 @@ function MainAppBar() {
   };
 
   const handleNavigate = (path: string) => {
-    setAnchorElNav(null);
     navigate(path);
+    setAnchorElNav(null);
   };
 
   return (
     <AppBar position="static">
       <Container maxWidth={false}>
         <Toolbar disableGutters sx={{ width: "100%" }}>
-          <Typography
+          <AppLink
+            to="/"
             variant="h6"
             noWrap
-            component="a"
-            href="#"
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
@@ -69,13 +70,9 @@ function MainAppBar() {
               color: "inherit",
               textDecoration: "none",
             }}
-            onClick={(e) => {
-              e.preventDefault();
-              navigate("/");
-            }}
           >
             Snippet
-          </Typography>
+          </AppLink>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
@@ -105,18 +102,22 @@ function MainAppBar() {
               sx={{ display: { xs: "block", md: "none" } }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography sx={{ textAlign: "center" }}>{page}</Typography>
+                <MenuItem
+                  key={page.path}
+                  onClick={() => handleCloseNavMenu(page.path)}
+                >
+                  <Typography sx={{ textAlign: "center" }}>
+                    {page.name}
+                  </Typography>
                 </MenuItem>
               ))}
             </Menu>
           </Box>
           <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
-          <Typography
+          <AppLink
+            to="/"
             variant="h5"
             noWrap
-            component="a"
-            href="/"
             sx={{
               mr: 2,
               display: { xs: "flex", md: "none" },
@@ -129,60 +130,66 @@ function MainAppBar() {
             }}
           >
             Snippet
-          </Typography>
+          </AppLink>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
               <Button
-                key={page}
-                onClick={handleCloseNavMenu}
+                key={page.path}
+                onClick={() => handleCloseNavMenu(page.path)}
                 sx={{ my: 2, color: "white", display: "block" }}
               >
-                {page}
+                {page.name}
               </Button>
             ))}
           </Box>
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar
-                  alt={user?.user_metadata?.username || "User Avatar"}
-                  src="https://avatars.githubusercontent.com/u/109489086?v=4"
-                />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: "45px" }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem
-                  key={setting.path}
-                  onClick={() => handleNavigate(setting.path)}
-                >
+          {isAuthenticated ? (
+            <Box sx={{ flexGrow: 0 }}>
+              <Tooltip title="Open settings">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar
+                    alt={user?.user_metadata?.username || "User Avatar"}
+                    src="https://avatars.githubusercontent.com/u/109489086?v=4"
+                  />
+                </IconButton>
+              </Tooltip>
+              <Menu
+                sx={{ mt: "45px" }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                {settings.map((setting) => (
+                  <MenuItem
+                    key={setting.path}
+                    onClick={() => handleNavigate(setting.path)}
+                  >
+                    <Typography sx={{ textAlign: "center" }}>
+                      {setting.name}
+                    </Typography>
+                  </MenuItem>
+                ))}
+                <MenuItem onClick={() => logout()} disabled={isLoading}>
                   <Typography sx={{ textAlign: "center" }}>
-                    {setting.name}
+                    {isLoading ? "Logging out..." : "Log out"}
                   </Typography>
                 </MenuItem>
-              ))}
-              <MenuItem onClick={() => logout()} disabled={isLoading}>
-                <Typography sx={{ textAlign: "center" }}>
-                  {isLoading ? "Logging out..." : "Log out"}
-                </Typography>
-              </MenuItem>
-            </Menu>
-          </Box>
+              </Menu>
+            </Box>
+          ) : (
+            <Button color="inherit" onClick={() => navigate("/sign-in")}>
+              Sign In
+            </Button>
+          )}
         </Toolbar>
       </Container>
     </AppBar>

@@ -11,6 +11,8 @@ import Homepage from "./pages/Homepage";
 import { SnackbarAlertProvider } from "./contexts/snackbar/SnackbarAlertContext";
 import SnippetPage from "./pages/SnippetPage";
 import SingleSnippetPage from "./pages/SingleSnippetPage";
+import DiscoverPage from "./pages/DiscoverPage";
+import EditSnippetPage from "./pages/EditSnippetPage";
 
 const darkTheme = createTheme({
   palette: {
@@ -18,8 +20,9 @@ const darkTheme = createTheme({
   },
 });
 
+const queryClient = new QueryClient();
+
 function App() {
-  const queryClient = new QueryClient();
   return (
     <ThemeProvider theme={darkTheme}>
       <QueryClientProvider client={queryClient}>
@@ -37,10 +40,17 @@ function App() {
                 <Route path="/" element={<Homepage />} />
                 <Route path="/snippets" element={<SnippetPage />} />
                 <Route path="/snippets/:id" element={<SingleSnippetPage />} />
+                <Route
+                  path="/snippets/:id/edit"
+                  element={<EditSnippetPage />}
+                />
               </Route>
               <Route element={<PublicPageLayout />}>
                 <Route path="/sign-in" element={<LoginPage />} />
                 <Route path="/sign-up" element={<SignupPage />} />
+              </Route>
+              <Route element={<AppLayout />}>
+                <Route path="/discover" element={<DiscoverPage />} />
               </Route>
               <Route path="*" element={<div>404 Page</div>} />
             </Routes>

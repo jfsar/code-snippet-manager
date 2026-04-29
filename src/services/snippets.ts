@@ -64,3 +64,35 @@ export async function getSnippetById(id: string) {
 
   return data;
 }
+
+export async function updateSnippet(
+  id: string,
+  {
+    title,
+    content,
+    syntax,
+    tags,
+    visibility,
+  }: Partial<
+    Pick<Snippet, "title" | "content" | "syntax" | "tags" | "visibility">
+  >,
+) {
+  const updateData: Record<string, any> = {};
+
+  if (title) updateData.title = title;
+  if (content) updateData.content = content;
+  if (syntax) updateData.syntax = syntax;
+  if (tags) updateData.tags = tags;
+  if (visibility) updateData.visibility = visibility;
+
+  const { error } = await supabase
+    .from("snippets")
+    .update(updateData)
+    .eq("id", id);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return id;
+}

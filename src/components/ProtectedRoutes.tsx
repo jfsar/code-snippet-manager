@@ -22,4 +22,6 @@ export default function ProtectedRoute({
   }
 
   if (isAuthenticated) return children;
+
+  return null;
 }

@@ -4,6 +4,7 @@ import { useUser } from "../../actions/auth/useUser";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import FullScreenSpinner from "../spinners/FullScreenSpinner";
+import MainAppBar from "../navigation/MainAppBar";
 
 export default function PublicPageLayout() {
   const { isAuthenticated, isLoading } = useUser();
@@ -11,7 +12,7 @@ export default function PublicPageLayout() {
 
   React.useEffect(() => {
     if (!isLoading && isAuthenticated) {
-      navigate("/");
+      navigate("/", { replace: true });
     }
   }, [isAuthenticated, isLoading]);
 
@@ -21,13 +22,14 @@ export default function PublicPageLayout() {
 
   return (
     <React.Fragment>
+      <MainAppBar />
       <Container maxWidth="md" sx={{ m: "0 auto" }}>
         <Box
           sx={{
             display: "flex",
             alignItems: "center",
             flexDirection: "column",
-            paddingBlock: 25,
+            paddingBlock: 15,
           }}
         >
           <Outlet />

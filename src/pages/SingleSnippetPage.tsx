@@ -15,13 +15,14 @@ import LibraryAddCheckIcon from "@mui/icons-material/LibraryAddCheck";
 import CodeMirror from "@uiw/react-codemirror";
 import { languages } from "../lib/langsupport";
 import SnippetSkeleton from "../components/skeletons/SnippetSkeleton";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useGetSnippetById } from "../actions/snippets/useGetSnippetById";
 import { useState } from "react";
 
 export default function SingleSnippetPage() {
   const { user } = useUser();
   const { id } = useParams();
+  const navigate = useNavigate();
   const { snippet, isLoading } = useGetSnippetById(id as string);
   const [copied, setCopied] = useState(false);
 
@@ -29,6 +30,10 @@ export default function SingleSnippetPage() {
     await navigator.clipboard.writeText(snippet?.content || "");
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleEditIconClick = () => {
+    navigate(`/snippets/${id}/edit`);
   };
 
   if (isLoading) {
@@ -104,7 +109,12 @@ export default function SingleSnippetPage() {
               <Stack direction="row" spacing={1}>
                 {user && snippet.owner_id === user.id && (
                   <>
-                    <IconButton aria-label="edit" color="primary" size="small">
+                    <IconButton
+                      onClick={handleEditIconClick}
+                      aria-label="edit"
+                      color="primary"
+                      size="small"
+                    >
                       <ModeEditIcon fontSize="inherit" />
                     </IconButton>
                     <IconButton aria-label="delete" color="error" size="small">

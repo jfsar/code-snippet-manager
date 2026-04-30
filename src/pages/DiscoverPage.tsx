@@ -7,15 +7,20 @@ import {
   Typography,
 } from "@mui/material";
 import CodeMirror from "@uiw/react-codemirror";
+import { EditorView } from "@codemirror/view";
 import { languages } from "../lib/langsupport";
 import SnippetSkeleton from "../components/skeletons/SnippetSkeleton";
 import AppLink from "../components/ui/AppLink";
 import { useGetAllPublicSnippets } from "../actions/snippets/useGetAllPublicSnippets";
 import Pagination from "../components/ui/Pagination";
 
+const noScrollTheme = EditorView.theme({
+  "&": { height: "20vh" },
+  ".cm-scroller": { overflow: "hidden" },
+});
+
 export default function DiscoverPage() {
   const { isLoading, snippets, total } = useGetAllPublicSnippets();
-  console.log(snippets);
 
   if (isLoading) {
     return (
@@ -72,10 +77,10 @@ export default function DiscoverPage() {
                   value={snippet.content}
                   extensions={[
                     languages[snippet.syntax as keyof typeof languages],
+                    noScrollTheme,
                   ]}
                   theme={"dark"}
                   width="100%"
-                  height="300px"
                   editable={false}
                 />
               </Container>

@@ -21,6 +21,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 export default function Homepage() {
   const { showSnackBar } = useSnackBarAlert();
+  const queryClient = useQueryClient();
   const [chips, setChips] = useState<string[]>([]);
   const [title, setTitle] = useState<string>("");
   const [value, setValue] = useState<string>("");
@@ -59,7 +60,6 @@ export default function Homepage() {
       },
       {
         onSuccess: () => {
-          const queryClient = useQueryClient();
           queryClient.invalidateQueries({ queryKey: ["snippets", user?.id] });
           showSnackBar("Snippet saved successfully!", "success");
           setTitle("");

@@ -11,11 +11,12 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import AdbIcon from "@mui/icons-material/Adb";
 import { useLogout } from "../../actions/auth/useLogout";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../actions/auth/useUser";
+import CodeIcon from "@mui/icons-material/Code";
 import AppLink from "../ui/AppLink";
+import { Stack } from "@mui/material";
 
 const pages = [{ name: "All Snippets", path: "/discover" }];
 const settings = [{ name: "Your Snippets", path: "/snippets" }];
@@ -54,7 +55,7 @@ function MainAppBar() {
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="static" sx={{ paddingInline: 5 }}>
       <Container maxWidth={false}>
         <Toolbar disableGutters sx={{ width: "100%" }}>
           <AppLink
@@ -71,7 +72,7 @@ function MainAppBar() {
               textDecoration: "none",
             }}
           >
-            Snippet
+            <CodeIcon sx={{ height: 40, width: 40 }} />
           </AppLink>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
@@ -113,7 +114,6 @@ function MainAppBar() {
               ))}
             </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
           <AppLink
             to="/"
             variant="h5"
@@ -186,9 +186,23 @@ function MainAppBar() {
               </Menu>
             </Box>
           ) : (
-            <Button color="inherit" onClick={() => navigate("/sign-in")}>
-              Sign In
-            </Button>
+            <Stack direction="row" spacing={2}>
+              <Button
+                size="small"
+                color="inherit"
+                onClick={() => navigate("/sign-in")}
+              >
+                Sign In
+              </Button>
+              <Button
+                size="small"
+                variant="contained"
+                color="inherit"
+                onClick={() => navigate("/sign-up")}
+              >
+                Register
+              </Button>
+            </Stack>
           )}
         </Toolbar>
       </Container>

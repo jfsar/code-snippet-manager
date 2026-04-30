@@ -19,6 +19,7 @@ export default function ConfirmItemDeletionDialog({
   owner: string;
 }) {
   const [open, setOpen] = React.useState(false);
+  const queryClient = useQueryClient();
   const { deleteSnippet, isPending } = useDeleteSnippet();
   const navigate = useNavigate();
 
@@ -33,7 +34,6 @@ export default function ConfirmItemDeletionDialog({
   const handleDelete = () => {
     deleteSnippet(id, {
       onSuccess() {
-        const queryClient = useQueryClient();
         queryClient.invalidateQueries({ queryKey: ["snippets", owner] });
         navigate("/snippets");
       },

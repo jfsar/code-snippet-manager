@@ -27,6 +27,20 @@ export default function SnippetPage() {
     );
   }
 
+  if (!snippets || snippets.length == 0) {
+    return (
+      <Box sx={{ width: "100%" }}>
+        <div
+          style={{
+            width: "100%",
+          }}
+        >
+          <Typography color="inheret">You have no snippets.</Typography>
+        </div>
+      </Box>
+    );
+  }
+
   return (
     <Box sx={{ width: "100%" }}>
       {snippets &&

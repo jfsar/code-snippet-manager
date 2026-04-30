@@ -27,6 +27,7 @@ import { useQueryClient } from "@tanstack/react-query";
 export default function EditSnippetPage() {
   const params = useParams();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { snippet, isLoading } = useGetSnippetById(params?.id as string);
   const { showSnackBar } = useSnackBarAlert();
   const [chips, setChips] = useState<string[]>(
@@ -71,7 +72,6 @@ export default function EditSnippetPage() {
       },
       {
         onSuccess: () => {
-          const queryClient = useQueryClient();
           setTitle("");
           setValue("");
           setChips([]);

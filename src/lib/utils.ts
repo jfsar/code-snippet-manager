@@ -7,4 +7,4 @@ export function generateUsername(fullName: string) {
   return `${base}${array[0].toString(36).slice(0, 5)}`;
 }
 
-export const PER_PAGE = 3;
+export const PER_PAGE = 5;

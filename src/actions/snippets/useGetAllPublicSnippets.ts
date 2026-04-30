@@ -5,7 +5,7 @@ import { PER_PAGE } from "../../lib/utils";
 
 export function useGetAllPublicSnippets() {
   const queryClient = useQueryClient();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const page = !searchParams.get("page") ? 1 : Number(searchParams.get("page"));
   const {

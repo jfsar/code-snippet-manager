@@ -1,10 +1,15 @@
-# Users
+# GitHub Gist Clone
 
-email: john_doe@example.com
-password: G?rNsqDKw58f]ic
+A code snippet manager web application
 
-email:davidwebb@example.com
-password: !o428RZ#
+---
 
-email: ccope@example.com
-password: 98q(F&9}
+# Tech/Tools
+
+- Supabase
+- React
+- TypeScript
+- React Router
+- Tanstack Query
+- Material UI
+- Vite

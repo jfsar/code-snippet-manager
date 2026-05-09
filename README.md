@@ -13,3 +13,6 @@ A code snippet manager web application
 - Tanstack Query
 - Material UI
 - Vite
+
+---
+Project Status: Under Development
